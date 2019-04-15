@@ -10,7 +10,7 @@ time_table_drop = "DROP TABLE IF EXISTS time;"
 
 songplay_table_create = ("""
 CREATE TABLE IF NOT EXISTS songplays ( 
-    songplay_id INTEGER PRIMARY KEY,
+    songplay_id INTEGER,
     start_time INTEGER,
     user_id INTEGER,
     level TEXT,
@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS songplays (
 """)
 
 user_table_create = ("""
-CREATE TABLE IF NOT EXISTS users(
+CREATE TABLE IF NOT EXISTS users (
     user_id INTEGER PRIMARY KEY,
     first_name TEXT,
     last_name TEXT,
@@ -70,6 +70,10 @@ songplay_table_insert = ("""
 """)
 
 user_table_insert = ("""
+INSERT INTO users (user_id, first_name, last_name, gender, level)
+VALUES (%s, %s, %s, %s, %s)
+ON CONFLICT ON CONSTRAINT users_pkey
+DO NOTHING;
 """)
 
 song_table_insert = ("""
