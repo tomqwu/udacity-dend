@@ -3,7 +3,7 @@
 songplay_table_drop = "DROP TABLE IF EXISTS songplays;"
 user_table_drop = "DROP TABLE IF EXISTS users;"
 song_table_drop = "DROP TABLE IF EXISTS songs;"
-artist_table_drop = "DROP TABLE IF EXISTS artiests;"
+artist_table_drop = "DROP TABLE IF EXISTS artists;"
 time_table_drop = "DROP TABLE IF EXISTS time;"
 
 # CREATE TABLES
@@ -17,8 +17,8 @@ CREATE TABLE IF NOT EXISTS songplays (
     song_id TEXT,
     artist_id TEXT,
     session_id INTEGER NOT NULL,
-    location TEXT,
-    user_agent TEXT
+    location TEXT NOT NULL,
+    user_agent TEXT NOT NULL
 );
 """)
 
@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS users (
     user_id INTEGER PRIMARY KEY,
     first_name TEXT NOT NULL,
     last_name TEXT NOT NULL,
-    gender TEXT,
+    gender TEXT NOT NULL,
     level TEXT NOT NULL
 );
 """)
@@ -39,21 +39,19 @@ CREATE TABLE IF NOT EXISTS songs (
     title TEXT NOT NULL,
     artist_id TEXT NOT NULL,
     year INTEGER NOT NULL,
-    duration FLOAT8
+    duration FLOAT8 NOT NULL
 );
 """)
-
-
 
 time_table_create = ("""
 CREATE TABLE IF NOT EXISTS time (
     start_time TIME NOT NULL,
-    hour INTEGER,
-    day INTEGER,
-    week INTEGER,
-    month INTEGER,
-    year INTEGER,
-    weekday INTEGER
+    hour INTEGER NOT NULL,
+    day INTEGER NOT NULL,
+    week INTEGER NOT NULL,
+    month INTEGER NOT NULL,
+    year INTEGER NOT NULL,
+    weekday INTEGER NOT NULL
 )
 """)
 
@@ -62,8 +60,8 @@ CREATE TABLE IF NOT EXISTS artists (
     artist_id TEXT PRIMARY KEY,
     name TEXT NOT NULL,
     location TEXT, 
-    lattitude FLOAT8,
-    longitude FLOAT8
+    lattitude FLOAT8 NOT NULL,
+    longitude FLOAT8 NOT NULL
 )
 """)
 

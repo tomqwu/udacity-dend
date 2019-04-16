@@ -4,22 +4,41 @@ import psycopg2
 import pandas as pd
 from sql_queries import *
 
+"""
+The Function accepts files in JSON format, reads song details and artist details; 
+finally inserts records to songs and artists tables.
 
+Args:
+    cur: Database cursor.
+    filepath: JSON file's location.
+
+Returns:
+    None
+"""
 def process_song_file(cur, filepath):
     # open song file
     df = pd.read_json(filepath, lines=True)
 
     # insert song record
-    for i, row in df[['song_id', 'title', 'artist_id', 'year', 'duration']].iterrows():
-        song_data = row.values.tolist()
-        cur.execute(song_table_insert, song_data)
-    
-    # insert artist record
-    for i, row in df[['artist_id', 'artist_name', 'artist_location', 'artist_latitude', 'artist_longitude']].iterrows():
-        artist_data = row.values.tolist()
+    song_data = df.values
+
+    for song in song_data:
+        cur.execute(song_table_insert, [song[7], song[8], song[0], song[9], song[5]])
+        # insert artist record
+        artist_data = [song[0], song[4], song[2], song[1], song[3]]
         cur.execute(artist_table_insert, artist_data)
 
+"""
+The Function accepts files in JSON format, reads log details; 
+finally inserts records to time, users and songplays tables.
 
+Args:
+    cur: Database cursor.
+    filepath: JSON file's location.
+
+Returns:
+    None
+"""
 def process_log_file(cur, filepath):
     # open log file
     df = pd.read_json(filepath, lines=True)
@@ -53,10 +72,21 @@ def process_log_file(cur, filepath):
         songid, artistid = results if results else None, None
 
         # insert songplay record
-        songplay_data = (pd.to_datetime(row.ts, unit='ms'), row.userId, row.level, songid, artistid, row.sessionId, row.location, row.userAgent)
+        songplay_data = (pd.to_datetime(int(row.ts//1000), unit='ms'), row.userId, row.level, songid, artistid, row.sessionId, row.location, row.userAgent)
         cur.execute(songplay_table_insert, songplay_data)
 
+"""
+The Function accepts folder path, process each file and pass it to process functions
 
+Args:
+    cur: Database cursor.
+    conn: db connection.
+    filepath: json folder path
+    func: process function name
+
+Returns:
+    None
+"""
 def process_data(cur, conn, filepath, func):
     # get all files matching extension from directory
     all_files = []
