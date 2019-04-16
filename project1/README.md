@@ -17,3 +17,6 @@ A startup called Sparkify wants to analyze the data they've been collecting on s
 | `etl.py`           | populate sample testing data into database   |
 | `sql_queries.py`   | create, drop and insert queries              |
 | `test.ipynb`       | connect to db and run test queries           | 
+
+# Database Schema 
+The Schema design follows the dimension design by creating facts and dimension tables.

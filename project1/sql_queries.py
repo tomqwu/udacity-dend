@@ -11,12 +11,12 @@ time_table_drop = "DROP TABLE IF EXISTS time;"
 songplay_table_create = ("""
 CREATE TABLE IF NOT EXISTS songplays ( 
     songplay_id SERIAL PRIMARY KEY,
-    start_time TIME,
-    user_id INTEGER,
-    level TEXT,
+    start_time TIME NOT NULL,
+    user_id INTEGER NOT NULL,
+    level TEXT NOT NULL,
     song_id TEXT,
     artist_id TEXT,
-    session_id INTEGER,
+    session_id INTEGER NOT NULL,
     location TEXT,
     user_agent TEXT
 );
@@ -25,42 +25,45 @@ CREATE TABLE IF NOT EXISTS songplays (
 user_table_create = ("""
 CREATE TABLE IF NOT EXISTS users (
     user_id INTEGER PRIMARY KEY,
-    first_name TEXT,
-    last_name TEXT,
+    first_name TEXT NOT NULL,
+    last_name TEXT NOT NULL,
     gender TEXT,
-    level TEXT
+    level TEXT NOT NULL
 );
 """)
+
 
 song_table_create = ("""
 CREATE TABLE IF NOT EXISTS songs (
     song_id TEXT PRIMARY KEY,
-    title TEXT,
-    artist_id TEXT,
-    year INTEGER,
+    title TEXT NOT NULL,
+    artist_id TEXT NOT NULL,
+    year INTEGER NOT NULL,
     duration FLOAT8
 );
 """)
 
-artist_table_create = ("""
-CREATE TABLE IF NOT EXISTS artists (
-    artist_id TEXT PRIMARY KEY,
-    name TEXT,
-    location TEXT, 
-    lattitude FLOAT8,
-    longitude FLOAT8
-)
-""")
+
 
 time_table_create = ("""
 CREATE TABLE IF NOT EXISTS time (
-    start_time TIME,
+    start_time TIME NOT NULL,
     hour INTEGER,
     day INTEGER,
     week INTEGER,
     month INTEGER,
     year INTEGER,
     weekday INTEGER
+)
+""")
+
+artist_table_create = ("""
+CREATE TABLE IF NOT EXISTS artists (
+    artist_id TEXT PRIMARY KEY,
+    name TEXT NOT NULL,
+    location TEXT, 
+    lattitude FLOAT8,
+    longitude FLOAT8
 )
 """)
 
@@ -84,7 +87,7 @@ user_table_insert = ("""
 INSERT INTO users (user_id, first_name, last_name, gender, level)
 VALUES (%s, %s, %s, %s, %s)
 ON CONFLICT ON CONSTRAINT users_pkey
-DO NOTHING;
+DO UPDATE SET level = EXCLUDED.level;
 """)
 
 song_table_insert = ("""
