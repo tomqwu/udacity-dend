@@ -10,8 +10,8 @@ time_table_drop = "DROP TABLE IF EXISTS time;"
 
 songplay_table_create = ("""
 CREATE TABLE IF NOT EXISTS songplays ( 
-    songplay_id INTEGER,
-    start_time INTEGER,
+    songplay_id SERIAL PRIMARY KEY,
+    start_time TIME,
     user_id INTEGER,
     level TEXT,
     song_id TEXT,
@@ -34,21 +34,21 @@ CREATE TABLE IF NOT EXISTS users (
 
 song_table_create = ("""
 CREATE TABLE IF NOT EXISTS songs (
-    song_id TEXT,
+    song_id TEXT PRIMARY KEY,
     title TEXT,
     artist_id TEXT,
     year INTEGER,
-    duration FLOAT(5)
+    duration FLOAT8
 );
 """)
 
 artist_table_create = ("""
 CREATE TABLE IF NOT EXISTS artists (
-    artist_id TEXT,
+    artist_id TEXT PRIMARY KEY,
     name TEXT,
     location TEXT, 
-    lattitude FLOAT(4),
-    longitude FLOAT(4)
+    lattitude FLOAT8,
+    longitude FLOAT8
 )
 """)
 
@@ -67,6 +67,17 @@ CREATE TABLE IF NOT EXISTS time (
 # INSERT RECORDS
 
 songplay_table_insert = ("""
+INSERT INTO songplays (
+    start_time, 
+    user_id, 
+    level, 
+    song_id, 
+    artist_id, 
+    session_id,
+    location, 
+    user_agent
+)
+VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
 """)
 
 user_table_insert = ("""
@@ -79,11 +90,15 @@ DO NOTHING;
 song_table_insert = ("""
 INSERT INTO songs (song_id, title, artist_id, year, duration)
 VALUES (%s, %s, %s, %s, %s)
+ON CONFLICT ON CONSTRAINT songs_pkey
+DO NOTHING;
 """)
 
 artist_table_insert = ("""
 INSERT INTO artists (artist_id, name, location, lattitude, longitude)
 VALUES (%s, %s, %s, %s, %s)
+ON CONFLICT ON CONSTRAINT artists_pkey
+DO NOTHING;
 """)
 
 
@@ -95,6 +110,11 @@ VALUES (%s, %s, %s, %s, %s, %s, %s)
 # FIND SONGS
 
 song_select = ("""
+SELECT s.song_id, a.artist_id 
+FROM songs as s
+LEFT JOIN artists as a
+ON a.artist_id = s.artist_id
+WHERE title LIKE %s AND name LIKE %s AND duration = %s
 """)
 
 # QUERY LISTS
